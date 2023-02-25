@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>My Liff Map</title>
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+        <script
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDaVjXe2XbwsCLo02K_Pyo59NoNMLQikpg&callback=initMap&libraries=&v=weekly"
+        defer
+        ></script>
+        <script defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDaVjXe2XbwsCLo02K_Pyo59NoNMLQikpg&libraries=places&callback=initMap">
+        </script>
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">My Liff Map</a>
+        <div id="searchPlace">
+            <label for="inputPlace">地點</label>
+            <input id="inputPlace" type="text">
+            <select id="spottype">
+                <option value="restaurant">Restaurant</option>
+                <option value="bus_station">Bus Station</option>
+                <option value="cafe">Cafe</option>
+                <option value="movie_theater">Movie Theater</option>
+                <option value="tourist_attraction">Landmark</option>
+            </select>
+            <button class="btn btn-outline-success my-2 my-sm-0" id="searchButton">Search</button> 
+            <button  class="btn btn-outline-success my-2 my-sm-0" id="hidesearch">X</button>
+            <button class="btn btn-outline-success my-2 my-sm-0" id="openmarktable">open</button>
+        </div>
+        </nav>
+        <div id = "map">
+        </div>
+
+        <div id="floating-panel">
+            <b>Start: </b>
+            <select id="start">
+               <option value=1>1</option>
+               <option value=2>2</option>
+               <option value=3>3</option>
+               <option value=4>4</option>
+               <option value=5>5</option>
+               <option value=6>6</option>
+               <option value=7>7</option>
+               <option value=8>8</option>
+               <option value=9>9</option>
+               <option value=10>10</option>
+            </select>
+            <b>End: </b>
+            <select id="end">
+                <option value=1>1</option>
+                <option value=2>2</option>
+                <option value=3>3</option>
+                <option value=4>4</option>
+                <option value=5>5</option>
+                <option value=6>6</option>
+                <option value=7>7</option>
+                <option value=8>8</option>
+                <option value=9>9</option>
+                <option value=10>10</option>
+            </select>
+            <div id="output"></div>
+        </div>
+
+
+        <div id="emptyLine"> </div>
+        <table id="searchtable" class="table table-bordered table-dark hidden table-hover text-justify">
+            <thead>
+              <tr id="num">
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Address</th>
+                <th scope="col">Rating</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr id="trow1">
+                <td scope="row">1</td>
+                <td id="resultname1"></td>
+                <td id="resultaddress1"></td>
+                <td id="resultrating1"></td>
+              </tr>
+              <tr id="trow2"> 
+                <td scope="row">2</td>
+                <td id="resultname2"></td>
+                <td id="resultaddress2"></td>
+                <td id="resultrating2"></td>
+              </tr>
+              <tr id="trow3">
+                <td scope="row">3</td>
+                <td id="resultname3"></td>
+                <td id="resultaddress3"></td>
+                <td id="resultrating3"></td>
+              </tr>
+              <tr id="trow4">
+                <td scope="row">4</td>
+                <td id="resultname4"></td>
+                <td id="resultaddress4"></td>
+                <td id="resultrating4"></td>
+              </tr>
+              <tr id="trow5">
+                <td id="num" scope="row">5</td>
+                <td id="resultname5"></td>
+                <td id="resultaddress5"></td>
+                <td id="resultrating5"></td>
+              </tr>
+              <tr id="trow6">
+                <td scope="row">6</td>
+                <td id="resultname6"></td>
+                <td id="resultaddress6"></td>
+                <td id="resultrating6"></td>
+              </tr>
+              <tr id="trow7">
+                <td scope="row">7</td>
+                <td id="resultname7"></td>
+                <td id="resultaddress7"></td>
+                <td id="resultrating7"></td>
+              </tr>
+              <tr id="trow8">
+                <td scope="row">8</td>
+                <td id="resultname8"></td>
+                <td id="resultaddress8"></td>
+                <td id="resultrating8"></td>
+              </tr>
+              <tr id="trow9">
+                <td scope="row">9</td>
+                <td id="resultname9"></td>
+                <td id="resultaddress9"></td>
+                <td id="resultrating9"></td>
+              </tr>
+              <tr id="trow10">
+                <td scope="row">10</td>
+                <td id="resultname10"></td>
+                <td id="resultaddress10"></td>
+                <td id="resultrating10"></td>
+              </tr>
+            </tbody>
+        </table>
+
+        <table id="marktable" class="table table-bordered table-dark hidden table-hover text-justify">
+            <thead>
+              <tr id="num">
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Address</th>
+                <th scope="col">Rating</th>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+
+       
+
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">時間</span>
+            </div>
+            <input id="ConcernTime" type="text" class="form-control" placeholder="time"  aria-describedby="basic-addon1">
+            <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">地點</span>
+            </div>
+            <input id="ConcernPlace"type="text" class="form-control" placeholder="location"  aria-describedby="basic-addon1">
+            <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">描述</span>
+            </div>
+            <input id="PScb" type="text" class="form-control" placeholder="description"  aria-describedby="basic-addon1">
+            <button id="sendschedule" class="btn btn-outline-success my-2 my-sm-0" >Submit</button> 
+
+          </div>
+
+        <div id="liffAppContent">
+            <!-- ACTION BUTTONS -->
+            <div class="buttonGroup">
+                <div class="buttonRow">
+                    <button id="openWindowButton">Open External Window</button>
+                    <button id="closeWindowButton">Close LIFF App</button>
+                </div>
+                <div class="buttonRow">
+                    <button id="scanQrCodeButton">Open QR Code Reader</button>
+                    <button id="sendMessageButton">Send Message</button>
+                </div>
+                <div class="buttonRow">
+                    <button id="getAccessToken">Get Access Token</button>
+                    <button id="getProfileButton">Get Profile</button>
+                </div>
+                <div class="buttonRow">
+                    <button id="shareTargetPicker">Open Share Target Picker</button>
+                </div>
+            </div>
+            <div id="shareTargetPickerMessage"></div>
+            <!-- ACCESS TOKEN DATA -->
+            <div id="accessTokenData" class="hidden textLeft">
+                <h2>Access Token</h2>
+                <a href="#" onclick="toggleAccessToken()">Close Access Token</a>
+                <table>
+                    <tr>
+                        <th>accessToken</th>
+                        <td id="accessTokenField"></td>
+                    </tr>
+                </table>
+            </div> 
+            <!-- SCAN QR RESULT -->
+            <div id="scanQr" class="hidden textLeft">
+                <h2>QR Code reader</h2>
+                <a href="#" onclick="toggleQrCodeReader()">Close QR Code Reader Result</a>
+                <table>
+                    <tr>
+                        <th>scanCode Result</th>
+                        <td id="scanQrField"></td>
+                    </tr>
+                </table>
+            </div>
+            <!-- PROFILE INFO -->
+            <div id="profileInfo" class="hidden textLeft">
+                <h2>Profile</h2>
+                <a href="#" onclick="toggleProfileData()">Close Profile</a>
+                <div id="profilePictureDiv">
+                </div>
+                <table>
+                    <tr>
+                        <th>userId</th>
+                        <td id="userIdProfileField"></td>
+                    </tr>
+                    <tr>
+                        <th>displayName</th>
+                        <td id="displayNameField"></td>
+                    </tr>
+                    <tr>
+                        <th>statusMessage</th>
+                        <td id="statusMessageField"></td>
+                    </tr>
+                </table>
+            </div> 
+            <!-- LIFF DATA -->
+             <div id="liffData">
+                <h2 id="liffDataHeader" class="textLeft">LIFF Data</h2>
+                <table>
+                    <tr>
+                        <th>OS</th>
+                        <td id="deviceOS" class="textLeft"></td>
+                    </tr>
+                    <tr>
+                        <th>Language</th>
+                        <td id="browserLanguage" class="textLeft"></td>
+                    </tr>
+                    <tr>
+                        <th>LIFF SDK Version</th>
+                        <td id="sdkVersion" class="textLeft"></td>
+                    </tr>
+                    <tr>
+                        <th>LINE Version</th>
+                        <td id="lineVersion" class="textLeft"></td>
+                    </tr>
+                    <tr>
+                        <th>isInClient</th>
+                        <td id="isInClient" class="textLeft"></td>
+                    </tr>
+                    <tr>
+                        <th>isLoggedIn</th>
+                        <td id="isLoggedIn" class="textLeft"></td>
+                    </tr>
+                </table>
+            </div> 
+            <!-- LOGIN LOGOUT BUTTONS -->
+            <div class="buttonGroup">
+                <button id="liffLoginButton">Log in</button>
+                <button id="liffLogoutButton">Log out</button>
+            </div>
+            <div id="statusMessage">
+                <div id="isInClientMessage"></div>
+                <div id="apiReferenceMessage">
+                    <p>Available LIFF methods vary depending on the browser you use to open the LIFF app.</p>
+                    <p>Please refer to the <a href="https://developers.line.biz/en/reference/liff/#initialize-liff-app">API reference page</a> for more information.</p>
+                </div>
+            </div>
+        </div>
+        <!-- LIFF ID ERROR -->
+        <div id="liffIdErrorMessage" class="hidden">
+            <p>You have not assigned any value for LIFF ID.</p>
+            <p>If you are running the app using Node.js, please set the LIFF ID as an environment variable in your Heroku account follwing the below steps: </p>
+            <code id="code-block">
+                <ol>
+                    <li>Go to `Dashboard` in your Heroku account.</li>
+                    <li>Click on the app you just created.</li>
+                    <li>Click on `Settings` and toggle `Reveal Config Vars`.</li>
+                    <li>Set `MY_LIFF_ID` as the key and the LIFF ID as the value.</li>
+                    <li>Your app should be up and running. Enter the URL of your app in a web browser.</li>
+                </ol>
+            </code>
+            <p>If you are using any other platform, please add your LIFF ID in the <code>index.html</code> file.</p>
+            <p>For more information about how to add your LIFF ID, see <a href="https://developers.line.biz/en/reference/liff/#initialize-liff-app">Initializing the LIFF app</a>.</p>
+        </div>
+        <!-- LIFF INIT ERROR -->
+        <div id="liffInitErrorMessage" class="hidden">
+            <p>Something went wrong with LIFF initialization.</p>
+            <p>LIFF initialization can fail if a user clicks "Cancel" on the "Grant permission" screen, or if an error occurs in the process of <code>liff.init()</code>.</p>
+        </div> 
+        <!-- NODE.JS LIFF ID ERROR -->
+        <div id="nodeLiffIdErrorMessage" class="hidden">
+            <p>Unable to receive the LIFF ID as an environment variable.</p>
+        </div> 
+        
+        <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+        <script src="liff-starter.js"></script>
+    </body>
+</html>
